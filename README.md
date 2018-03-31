@@ -2,9 +2,7 @@
 
 ## This is a playground for adding web UI on top of libigl algos
 
-There's a bunch of cool research code here that has no UI.
-
-I just want to make toys out of some of it.
+There's a bunch of cool research code (not by me) and I just want to make toys out of some of it.
 
 Any new code here from me is released under the standard open source MIT license.
 
