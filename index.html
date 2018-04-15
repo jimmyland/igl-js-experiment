@@ -96,7 +96,10 @@
         </symbol>
         </defs>
         </svg>
-        
+
+        <!-- Offscreen input, indirectly triggered by load button, to load files from user machine -->
+        <input type="file" id="upload_mesh" accept=".obj" style="position: fixed; top: -100em">
+
         <script>var ready_for_emscripten_calls = false;</script>
         <!-- this 'container' element is where the 3D rendering is inserted -->
         <div id="container" tabindex="0" class="no-selection" style="outline: 0px solid transparent;"></div>
@@ -130,7 +133,7 @@
               <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">File
               <span class="caret"></span></button>
               <ul class="dropdown-menu">
-                <li><a role="button" onclick="alert('not implemented');">Load ...</a></li>
+                <li><a role="button" onclick="load_mesh();">Load ...</a></li>
               </ul>
             </div><div class="dropdown" style="display: inline-block; padding: 0px;">
               <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Edit
@@ -141,6 +144,8 @@
               </ul>
             </div>
         </div>
+
+
         
         <script>
             function getFormVals(id) {

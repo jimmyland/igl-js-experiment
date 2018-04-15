@@ -1,6 +1,8 @@
 // this will be a wrapper around igl functionality, helping exposing it to js (and threejs specifically)
 
 #include <iostream>
+#include <fstream>
+#include <string>
 
 #ifdef EMSCRIPTEN
 #include <emscripten.h>
@@ -9,6 +11,7 @@
 #endif
 
 #include "igl/cotmatrix.h"
+#include "igl/readOBJ.h"
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
@@ -23,8 +26,14 @@ int main() {
     emscripten_run_script("ready_for_emscripten_calls = true;");
 }
 
-int test()
+int test(std::string file)
 {
+    std::cout << "trying to load " << file << std::endl;
+
+    std::vector<std::vector<double > > Vo;
+    std::vector<std::vector<int> > Fo;
+    igl::readOBJ(file, Vo, Fo);
+    std::cout << "loaded " << file << " with verts " << Vo.size() << " and faces " << Fo.size() << std::endl;
     Eigen::MatrixXd V(4,2);
     V<< 0,0,
         1,0,

@@ -2,7 +2,7 @@
 CC=export PATH=/usr/local/bin/:$PATH && emcc
 SOURCES:=$(wildcard *.cpp)
 LDFLAGS=
-O2_LDFLAGS=-O2 --llvm-opts 2
+O2_LDFLAGS=-O2 --llvm-opts 2 -s FORCE_FILESYSTEM=1
 INCLUDEFLAGS=-I/usr/local/include/eigen3 -Iexternal/libigl/include
 OUTPUT=iglwrap.js
 
