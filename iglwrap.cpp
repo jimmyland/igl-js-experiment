@@ -26,6 +26,29 @@ int main() {
     emscripten_run_script("ready_for_emscripten_calls = true;");
 }
 
+typedef Eigen::Matrix<float, Eigen::Dynamic, 3, Eigen::RowMajor> RowMat3f;
+typedef Eigen::Matrix<unsigned int, Eigen::Dynamic, 3, Eigen::RowMajor> RowMat3ui;
+
+struct Mesh
+{
+    RowMat3ui F;
+    RowMat3f V;
+
+    val getVertices() {
+        return val(typed_memory_view(V.size(), V.data()));
+    }
+
+    val getIndices() {
+        return val(typed_memory_view(F.size(), F.data()));
+    }
+};
+
+Mesh loadOBJ(std::string file) {
+    Mesh m;
+    igl::readOBJ(file, m.V, m.F);
+    return m;
+}
+
 int test(std::string file)
 {
     std::cout << "trying to load " << file << std::endl;
@@ -50,4 +73,9 @@ int test(std::string file)
 
 EMSCRIPTEN_BINDINGS(igl) {
     function("test", &test);
+    function("loadOBJ", &loadOBJ);
+    class_<Mesh>("Mesh")
+    .function("getVertices", &Mesh::getVertices)
+    .function("getIndices", &Mesh::getIndices)
+    ;
 }

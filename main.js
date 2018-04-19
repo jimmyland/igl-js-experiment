@@ -27,6 +27,7 @@ var xf_manager;
 var undo_q;
 
 var settings;
+var m3;
 
 function loadMeshFile(evt) {
     var files = evt.target.files;
@@ -38,6 +39,8 @@ function loadMeshFile(evt) {
             Module.test('/root.obj');
             Module.test('/rot.obj');
             Module.test('rot.obj');
+            var m = Module.loadOBJ('rot.obj');
+            m3 = new RawMesh3(m, xf_manager.scene);
         };
         reader.readAsArrayBuffer(files[0]);
     }
