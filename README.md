@@ -6,6 +6,8 @@ There's a bunch of cool research code (not by me) and I just want to make toys o
 
 Any new code here from me is released under the standard open source MIT license.
 
+Live demo (not much there yet): https://jimmyland.github.io/igl-js-experiment/
+
 # Developer Instructions
 
 If you want to make toys here too, that's cool.
