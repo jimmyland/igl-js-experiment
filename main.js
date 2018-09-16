@@ -22,7 +22,6 @@ function override_cam_controls() { // disable trackball controls
 }
 
 
-// var v3;
 var xf_manager;
 var undo_q;
 
@@ -36,9 +35,6 @@ function loadMeshFile(evt) {
         var reader = new FileReader();
         reader.onload = function(event) {
             Module['FS_createDataFile']('/', 'rot.obj', new Uint8Array(event.target.result), true, false);
-            Module.test('/root.obj');
-            Module.test('/rot.obj');
-            Module.test('rot.obj');
             var m = Module.loadOBJ('rot.obj');
             m3 = new RawMesh3(m, xf_manager.scene);
         };
@@ -52,6 +48,11 @@ function load_mesh() {
     document.getElementById('upload_mesh').addEventListener('change', loadMeshFile, false);
     $("#upload_mesh").trigger('click');  // click a hidden button on the index page to trigger the load file dialog
     return false;
+}
+
+function qslim(fraction) {
+    m3.mesh.qslim(m3.faceCount()*fraction);
+    m3.update();
 }
 
 

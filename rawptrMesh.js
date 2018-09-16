@@ -13,6 +13,16 @@ var RawMesh3 = function(iglMesh, scene) {
     this.mesh3 = new THREE.Mesh(this.geometry, this.material);
     this.scene.add(this.mesh3);
 
+    this.update = function() {
+        this.geometry.addAttribute('position', new THREE.BufferAttribute(this.mesh.getVertices(), 3));
+        this.geometry.setIndex(new THREE.BufferAttribute(this.mesh.getIndices(), 1));
+        this.geometry.attributes.position.needsUpdate = true;
+    }
+
+    this.faceCount = function() {
+        return this.geometry.getIndex().count / 3;
+    }
+
 };
 
 RawMesh3.prototype.constructor = RawMesh3;

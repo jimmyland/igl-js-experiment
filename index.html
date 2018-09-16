@@ -142,8 +142,46 @@
               <ul class="dropdown-menu">
                 <li><a role="button" onclick="alert('not implemented');">Undo</a></li>
                 <li><a role="button" onclick="alert('not implemented');">Redo</a></li>
+                <li><a role="button" href="#qslimModal" data-toggle="modal" data-target="#qslimModal">QSlim</a></li>
               </ul>
             </div>
+        </div>
+
+
+        <div class="modal fade" id="qslimModal" tabindex="-1" role="dialog" aria-labelledby="qslimModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="showSitesModalLabel">QSlim</h4>
+              </div>
+              <div class="modal-body">
+              <form class="form-inline" id="qslimForm">
+              <div class="form-inline">
+                <label for="sites_scale">Target percent faces:</label>
+                <input id="qslim_faces_slider" type="text" name="qslim_percent_faces" data-slider-tooltip="hide" data-slider-value=".2" data-slider-min=".01" data-slider-max="1" data-slider-step="1" />
+                &nbsp;&nbsp;&nbsp;<span id="qslim_faces_slider_val">.2</span>
+                <script type="text/javascript">$("#qslim_faces_slider").slider({
+                    min: .01,
+                    max: 1.0,
+                    value: .2,
+                    step: .01
+                });
+                $("#qslim_faces_slider").on("change", function(slideEvt) {
+                    $("#qslim_faces_slider_val").text(slideEvt.value.newValue);
+                });
+                </script>
+              </div>
+              </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="qslim(getFormVals('#qslimForm').qslim_percent_faces);">Apply</button>
+              </div>
+            </div>
+          </div>
         </div>
 
 

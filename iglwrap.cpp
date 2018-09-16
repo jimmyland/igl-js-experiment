@@ -4,6 +4,11 @@
 #include <fstream>
 #include <string>
 
+#include <exception>
+
+// pthreads support is experimental in emscripten; safer to disable threading for now
+#define IGL_PARALLEL_FOR_FORCE_SERIAL
+
 #ifdef EMSCRIPTEN
 #include <emscripten.h>
 #include <emscripten/bind.h>
@@ -12,6 +17,7 @@
 
 #include "igl/cotmatrix.h"
 #include "igl/readOBJ.h"
+#include "igl/qslim.h"
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
@@ -29,6 +35,13 @@ int main() {
 typedef Eigen::Matrix<float, Eigen::Dynamic, 3, Eigen::RowMajor> RowMat3f;
 typedef Eigen::Matrix<unsigned int, Eigen::Dynamic, 3, Eigen::RowMajor> RowMat3ui;
 
+void err(const std::string &msg) {
+    std::cerr << "ERROR: " << msg << std::endl;
+    #ifndef INSANITY
+    assert(false);
+    #endif
+}
+
 struct Mesh
 {
     RowMat3ui F;
@@ -41,13 +54,40 @@ struct Mesh
     val getIndices() {
         return val(typed_memory_view(F.size(), F.data()));
     }
+    
+    // helpers to cast from the igl-favored forms to the 3js-favored forms
+    void setV(const Eigen::MatrixXd &V) {
+        this->V = V.cast<float>();
+    }
+    void setF(const Eigen::MatrixXi &F) {
+        this->F = F.cast<unsigned int>();
+    }
+    
+    bool qslim(size_t targetFaceCount) {
+        // extra casting because igl::qslim only accepts the igl-favored forms
+        Eigen::MatrixXd Vin = V.cast<double>();
+        Eigen::MatrixXi Fin = F.cast<int>();
+        Eigen::MatrixXd OutV;
+        Eigen::MatrixXi OutF;
+        Eigen::VectorXi birthFaces, birthVertices;
+        bool success = igl::qslim(Vin, Fin, targetFaceCount, OutV, OutF, birthFaces, birthVertices);
+        if (!success) {
+            err("qslim failed");
+            return false;
+        }
+        this->setV(OutV);
+        this->setF(OutF);
+        return true;
+    }
 };
+
 
 Mesh loadOBJ(std::string file) {
     Mesh m;
     igl::readOBJ(file, m.V, m.F);
     return m;
 }
+
 
 int test(std::string file)
 {
@@ -77,5 +117,6 @@ EMSCRIPTEN_BINDINGS(igl) {
     class_<Mesh>("Mesh")
     .function("getVertices", &Mesh::getVertices)
     .function("getIndices", &Mesh::getIndices)
+    .function("qslim", &Mesh::qslim)
     ;
 }
