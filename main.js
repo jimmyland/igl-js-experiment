@@ -22,11 +22,38 @@ function override_cam_controls() { // disable trackball controls
 }
 
 
-var v3;
 var xf_manager;
 var undo_q;
 
 var settings;
+var m3;
+
+function loadMeshFile(evt) {
+    var files = evt.target.files;
+
+    if (files.length > 0) {
+        var reader = new FileReader();
+        reader.onload = function(event) {
+            Module['FS_createDataFile']('/', 'rot.obj', new Uint8Array(event.target.result), true, false);
+            var m = Module.loadOBJ('rot.obj');
+            m3 = new RawMesh3(m, xf_manager.scene);
+        };
+        reader.readAsArrayBuffer(files[0]);
+    }
+    document.getElementById('upload_mesh').value = null;
+}
+
+
+function load_mesh() {
+    document.getElementById('upload_mesh').addEventListener('change', loadMeshFile, false);
+    $("#upload_mesh").trigger('click');  // click a hidden button on the index page to trigger the load file dialog
+    return false;
+}
+
+function qslim(fraction) {
+    m3.mesh.qslim(m3.faceCount()*fraction);
+    m3.update();
+}
 
 
 //camera, renderer.domElement
